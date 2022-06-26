@@ -17,13 +17,14 @@ interface ICardProps {
 }
 
 interface IDraggableCardProps {
-  toDo: string;
+  toDoId: number;
+  toDoText: string;
   index: number;
 }
 
-function DraggableCard({ toDo, index }: IDraggableCardProps) {
+function DraggableCard({ toDoId, index, toDoText }: IDraggableCardProps) {
   return (
-    <Draggable draggableId={toDo} index={index} key={index}>
+    <Draggable draggableId={toDoId + ""} index={index} key={index}>
       {(magic, info) => (
         <Card
           ref={magic.innerRef}
@@ -31,7 +32,7 @@ function DraggableCard({ toDo, index }: IDraggableCardProps) {
           {...magic.dragHandleProps}
           isDragging={info.isDragging}
         >
-          <span>{toDo}</span>
+          <span>{toDoText}</span>
         </Card>
       )}
     </Draggable>

@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Droppable } from "react-beautiful-dnd";
 import DraggableCard from "./DraggableCard";
-import { useRef } from "react";
+import { useForm } from "react-hook-form";
+import { IToDo } from "../atoms";
 
 const Wrapper = styled.div`
   width: 300px;
@@ -25,11 +26,18 @@ const Area = styled.div<IAreaProps>`
     props.isDraggingOver
       ? "#dfe6e9"
       : props.isDraggingFromThis
-        ? "#b2bec3"
-        : "transparent"};
+      ? "#b2bec3"
+      : "transparent"};
   flex-grow: 1;
   transition: background-color 0.3s ease-in-out;
   padding: 20px;
+`;
+
+const Form = styled.form`
+  width: 100%;
+  input {
+    width: 100%;
+  }
 `;
 
 interface IAreaProps {
@@ -38,28 +46,41 @@ interface IAreaProps {
 }
 
 interface IBoardProps {
-  toDos: string[];
+  toDos: IToDo[];
   boardId: string;
 }
 
-function Board({ toDos, boardId }: IBoardProps) {
-  // const inputRef = document.querySelect("input");
-  const inputRef = useRef<HTMLInputElement>(null);
+interface IForm {
+  toDo: string;
+}
 
-  const onClick = () => {
-    // inputRef.focus();
-    inputRef.current?.focus();
-    setTimeout(() => {
-      // inputRef.blur();
-      inputRef.current?.blur();
-    }, 5000);
+function Board({ toDos, boardId }: IBoardProps) {
+  const { register, setValue, handleSubmit } = useForm<IForm>();
+
+  const onValid = ({ toDo }: IForm) => {
+    console.log(toDo);
+    setValue("toDo", "");
   };
 
   return (
     <Wrapper>
       <Title>{boardId}</Title>
-      <input ref={inputRef} placeholder="Grab me" />
-      <button onClick={onClick}>Click Me</button>
+      <Form onSubmit={handleSubmit(onValid)}>
+        <input
+          {...register("toDo", {
+            required: {
+              value: true,
+              message: "To Do is required",
+            },
+            maxLength: {
+              value: 30,
+              message: "Max length is 30",
+            },
+          })}
+          type="text"
+          placeholder={`Add task on ${boardId}`}
+        />
+      </Form>
       <Droppable droppableId={boardId}>
         {(magic, info) => (
           <Area
@@ -69,7 +90,12 @@ function Board({ toDos, boardId }: IBoardProps) {
             isDraggingFromThis={Boolean(info.draggingFromThisWith)}
           >
             {toDos.map((toDo, index) => (
-              <DraggableCard key={toDo} index={index} toDo={toDo} />
+              <DraggableCard
+                key={toDo.id}
+                index={index}
+                toDoId={toDo.id}
+                toDoText={toDo.text}
+              />
             ))}
             {magic.placeholder}
           </Area>
