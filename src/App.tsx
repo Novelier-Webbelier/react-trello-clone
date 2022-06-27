@@ -5,20 +5,17 @@ import styled from "styled-components";
 import Board from "./Components/Board";
 
 const Wrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
   display: flex;
-  max-width: 680px;
-  width: 100%;
-  margin: 0 auto;
   justify-content: center;
   align-items: center;
-  height: 100vh;
 `;
 
 const Boards = styled.div`
-  display: grid;
-  width: 100%;
-  gap: 10px;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 function App() {

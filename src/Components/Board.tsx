@@ -6,8 +6,10 @@ import { IToDo, toDoState } from "../atoms";
 import { useSetRecoilState } from "recoil";
 
 const Wrapper = styled.div`
-  width: 300px;
+  width: 15rem;
+  max-width: 500px;
   padding-top: 10px;
+  margin-right: 10px;
   background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
   min-height: 200px;
@@ -31,13 +33,25 @@ const Area = styled.div<IAreaProps>`
         : "transparent"};
   flex-grow: 1;
   transition: background-color 0.3s ease-in-out;
-  padding: 20px;
+  padding: 20px 10px;
 `;
 
 const Form = styled.form`
   width: 100%;
-  input {
-    width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Input = styled.input`
+  width: 90%;
+  padding: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  border: 0px;
+
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -78,7 +92,7 @@ function Board({ toDos, boardId }: IBoardProps) {
     <Wrapper>
       <Title>{boardId}</Title>
       <Form onSubmit={handleSubmit(onValid)}>
-        <input
+        <Input
           {...register("toDo", {
             required: {
               value: true,
