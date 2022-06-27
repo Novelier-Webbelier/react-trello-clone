@@ -5,16 +5,16 @@ import styled from "styled-components";
 import Board from "./Components/Board";
 
 const Wrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
   display: flex;
+  height: 100vh;
+  width: 100vw;
   justify-content: center;
   align-items: center;
 `;
 
 const Boards = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 `;
 

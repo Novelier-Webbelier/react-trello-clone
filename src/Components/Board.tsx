@@ -7,14 +7,13 @@ import { useSetRecoilState } from "recoil";
 
 const Wrapper = styled.div`
   width: 15rem;
-  max-width: 500px;
+  height: 100%;
   padding-top: 10px;
-  margin-right: 10px;
-  background-color: ${(props) => props.theme.boardColor};
   border-radius: 5px;
-  min-height: 200px;
   display: flex;
   flex-direction: column;
+  margin-right: 10px;
+  background-color: ${(props) => props.theme.boardColor};
 `;
 
 const Title = styled.h2`
@@ -45,7 +44,8 @@ const Form = styled.form`
 
 const Input = styled.input`
   width: 90%;
-  padding: 6px;
+  padding: 6px 10px;
+  box-sizing: border-box;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   border: 0px;
