@@ -34,7 +34,10 @@ const Title = styled.h2`
 const Area = styled.div`
   flex-grow: 1;
   transition: background-color 0.3s ease-in-out;
-  width: 90%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Form = styled.form`
@@ -54,6 +57,24 @@ const Input = styled.input`
 
   &:focus {
     outline: none;
+  }
+`;
+
+
+const ClearButton = styled(({ ...props }) => <button {...props}></button>)`
+  border: none;
+  padding: 5px 10px;
+  font-size: 15px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: color .3s ease-in-out;
+  transition: background-color .3s ease-in-out;
+  background-color: ${props => props.theme.cardColor};
+
+  &:hover {
+    background-color: blue;
+    color: ${props => props.theme.textColor};
   }
 `;
 
@@ -90,6 +111,15 @@ function Board({ toDos, boardId }: IBoardProps) {
     setValue("toDo", "");
   };
 
+  const onClearButtonClick = () => {
+    setToDo((prev) => {
+      return {
+        ...prev,
+        [boardId]: [],
+      };
+    });
+  };
+
   return (
     <Droppable droppableId={boardId}>
       {(magic, info) => (
@@ -97,7 +127,9 @@ function Board({ toDos, boardId }: IBoardProps) {
           isDraggingOver={info.isDraggingOver}
           isDraggingFromThis={Boolean(info.draggingFromThisWith)}
         >
-          <Title>{boardId}</Title>
+          <Title>
+            <span>{boardId}</span>
+          </Title>
           <Form onSubmit={handleSubmit(onValid)}>
             <Input
               {...register("toDo", {
@@ -125,6 +157,7 @@ function Board({ toDos, boardId }: IBoardProps) {
               />
             ))}
             {magic.placeholder}
+            <ClearButton onClick={onClearButtonClick}>Clear</ClearButton>
           </Area>
         </Wrapper>
       )}

@@ -1,9 +1,8 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "../atoms";
-import { Error } from "./Errors";
 
 const Card = styled.div<ICardProps>`
   display: flex;
@@ -11,6 +10,7 @@ const Card = styled.div<ICardProps>`
   border-radius: 5px;
   padding: 10px 10px;
   margin-bottom: 10px;
+  width: 85%;
   box-shadow: ${(props) =>
     props.isDragging ? "2px 2px 10px rgba(0, 0, 0, 0.5)" : "none"};
   background-color: ${(props) =>
