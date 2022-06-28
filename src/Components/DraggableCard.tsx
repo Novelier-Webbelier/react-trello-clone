@@ -1,8 +1,11 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import styled from "styled-components";
+import Errors from "./Errors";
 
 const Card = styled.div<ICardProps>`
+  display: flex;
+  justify-content: space-between;
   border-radius: 5px;
   padding: 10px 10px;
   margin-bottom: 10px;
@@ -33,6 +36,7 @@ function DraggableCard({ toDoId, index, toDoText }: IDraggableCardProps) {
           isDragging={info.isDragging}
         >
           <span>{toDoText}</span>
+          <Errors message="Delete" />
         </Card>
       )}
     </Draggable>
