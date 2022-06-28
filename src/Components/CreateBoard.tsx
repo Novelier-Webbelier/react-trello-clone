@@ -2,17 +2,16 @@ import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "../atoms";
-import Errors from "./Errors";
+import { Errors } from "./Errors";
 
 const Wrapper = styled.div`
   width: 15rem;
   padding: 10px;
   border-radius: 5px;
-  background-color: ${props => props.theme.boardColor};
+  background-color: ${(props) => props.theme.boardColor};
 `;
 
-const Form = styled.form`
-`;
+const Form = styled.form``;
 
 const Input = styled.input`
   width: 90%;
@@ -64,7 +63,8 @@ function CreateBoards() {
                 value: 15,
                 message: "Title is too long",
               },
-            })} placeholder={"Create a new board!"}
+            })}
+            placeholder={"Create a new board!"}
           />
           <Errors message={errors.title?.message} />
         </Form>

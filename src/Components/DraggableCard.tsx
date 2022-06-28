@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Draggable } from "react-beautiful-dnd";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import Errors from "./Errors";
+import { toDoState } from "../atoms";
+import { Error } from "./Errors";
 
 const Card = styled.div<ICardProps>`
   display: flex;
@@ -15,6 +17,16 @@ const Card = styled.div<ICardProps>`
     props.isDragging ? "#71b9ff" : props.theme.cardColor};
 `;
 
+const DeleteButton = styled(({ ...props }) => <button {...props}></button>)`
+  color: red;
+  font-weight: 500;
+  font-size: 13px;
+  text-align: center;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+`;
+
 interface ICardProps {
   isDragging: boolean;
 }
@@ -23,9 +35,29 @@ interface IDraggableCardProps {
   toDoId: number;
   toDoText: string;
   index: number;
+  boardId: string;
 }
 
-function DraggableCard({ toDoId, index, toDoText }: IDraggableCardProps) {
+function DraggableCard({
+  toDoId,
+  index,
+  toDoText,
+  boardId,
+}: IDraggableCardProps) {
+  const setToDos = useSetRecoilState(toDoState);
+
+  const onButtonClick = () => {
+    setToDos((prev) => {
+      const returnsValue = [...prev[boardId]];
+      returnsValue.splice(index, 1);
+
+      return {
+        ...prev,
+        [boardId]: [...returnsValue],
+      };
+    });
+  };
+
   return (
     <Draggable draggableId={toDoId + ""} index={index} key={index}>
       {(magic, info) => (
@@ -36,7 +68,9 @@ function DraggableCard({ toDoId, index, toDoText }: IDraggableCardProps) {
           isDragging={info.isDragging}
         >
           <span>{toDoText}</span>
-          <Errors message="Delete" />
+          <DeleteButton onClick={onButtonClick}>
+            <span>Delete</span>
+          </DeleteButton>
         </Card>
       )}
     </Draggable>

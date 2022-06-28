@@ -26,7 +26,7 @@ const Wrapper = styled.div<IWrapperProps>`
 
 const Title = styled.h2`
   text-align: center;
-  font-weight: 900; 
+  font-weight: 900;
   margin-bottom: 14px;
   font-size: 23px;
 `;
@@ -121,6 +121,7 @@ function Board({ toDos, boardId }: IBoardProps) {
                 index={index}
                 toDoId={toDo.id}
                 toDoText={toDo.text}
+                boardId={boardId}
               />
             ))}
             {magic.placeholder}
