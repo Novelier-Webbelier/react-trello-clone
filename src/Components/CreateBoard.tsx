@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "../atoms";
-import { Errors } from "./Errors";
+import ErrorMessage from "./Errors";
 
 const Wrapper = styled.div`
   width: 15rem;
@@ -66,7 +66,7 @@ function CreateBoards() {
             })}
             placeholder={"Create a new board!"}
           />
-          <Errors message={errors.title?.message} />
+          <ErrorMessage message={errors.title?.message} />
         </Form>
       </Wrapper>
     </>

@@ -11,6 +11,8 @@ interface IErrorsProps {
   message?: string;
 }
 
-export function Errors({ message }: IErrorsProps) {
+function ErrorMessage({ message }: IErrorsProps) {
   return <Error>{message}</Error>;
 }
+
+export default ErrorMessage;

@@ -4,6 +4,7 @@ import DraggableCard from "./DraggableCard";
 import { useForm } from "react-hook-form";
 import { IToDo, toDoState } from "../atoms";
 import { useSetRecoilState } from "recoil";
+import EditBoardTitle from "./EditBoardTitle";
 
 const Wrapper = styled.div<IWrapperProps>`
   width: 15rem;
@@ -24,13 +25,6 @@ const Wrapper = styled.div<IWrapperProps>`
         : props.theme.boardColor};
 `;
 
-const Title = styled.h2`
-  text-align: center;
-  font-weight: 900;
-  margin-bottom: 14px;
-  font-size: 23px;
-`;
-
 const Area = styled.div`
   flex-grow: 1;
   transition: background-color 0.3s ease-in-out;
@@ -40,11 +34,13 @@ const Area = styled.div`
   align-items: center;
 `;
 
-const Form = styled.form`
+export const Form = styled.form`
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  transition: all .3s ease-in-out;
 `;
 
 const Input = styled.input`
@@ -127,9 +123,8 @@ function Board({ toDos, boardId }: IBoardProps) {
           isDraggingOver={info.isDraggingOver}
           isDraggingFromThis={Boolean(info.draggingFromThisWith)}
         >
-          <Title>
-            <span>{boardId}</span>
-          </Title>
+          <EditBoardTitle boardId={boardId} />
+
           <Form onSubmit={handleSubmit(onValid)}>
             <Input
               {...register("toDo", {
@@ -146,6 +141,7 @@ function Board({ toDos, boardId }: IBoardProps) {
               placeholder={`Add task on ${boardId}`}
             />
           </Form>
+
           <Area ref={magic.innerRef} {...magic.droppableProps}>
             {toDos.map((toDo, index) => (
               <DraggableCard
