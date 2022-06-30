@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { IToDo, toDoState } from "../atoms";
 import { useRecoilState } from "recoil";
 import EditBoardTitle from "./EditBoardTitle";
+import DeleteBoard from "./DeleteBoard";
 
 const Wrapper = styled.div<IWrapperProps>`
   width: 15rem;
@@ -73,6 +74,10 @@ const ClearButton = styled(({ ...props }) => <button {...props}></button>)`
     background-color: blue;
     color: ${props => props.theme.textColor};
   }
+`;
+
+const ManageBoard = styled.div`
+  display: flex;
 `;
 
 interface IWrapperProps {
@@ -154,9 +159,12 @@ function Board({ toDos, boardId }: IBoardProps) {
               />
             ))}
             {magic.placeholder}
-            {toDo[boardId].length === 0 ? null : (
-              <ClearButton onClick={onClearButtonClick}>Clear</ClearButton>
-            )}
+            <ManageBoard>
+              {toDo[boardId].length === 0 ? null : (
+                <ClearButton onClick={onClearButtonClick}>Clear</ClearButton>
+              )}
+              <DeleteBoard boardId={boardId} />
+            </ManageBoard>
           </Area>
         </Wrapper>
       )}

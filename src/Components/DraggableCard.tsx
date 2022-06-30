@@ -1,14 +1,16 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
+import { useForm } from "react-hook-form";
 import { useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "../atoms";
+import { Form } from "./Board";
 
 const Card = styled.div<ICardProps>`
   display: flex;
   justify-content: space-between;
   border-radius: 5px;
-  padding: 10px 10px;
+  padding: 6px;
   margin-bottom: 10px;
   width: 85%;
   box-shadow: ${(props) =>
@@ -27,6 +29,19 @@ const DeleteButton = styled(({ ...props }) => <button {...props}></button>)`
   cursor: pointer;
 `;
 
+const Input = styled(({ ...props }) => <input {...props} />)`
+  background-color: transparent;
+  border: none;
+  border-radius: 3px;
+  padding: 4px;
+  transition: all .3s ease-in-out;
+
+  &:focus {
+    outline: none;
+    background-color: ${props => props.theme.boardColor};
+  }
+`;
+
 interface ICardProps {
   isDragging: boolean;
 }
@@ -38,6 +53,10 @@ interface IDraggableCardProps {
   boardId: string;
 }
 
+interface IForm {
+  toDoText: string;
+}
+
 function DraggableCard({
   toDoId,
   index,
@@ -45,6 +64,7 @@ function DraggableCard({
   boardId,
 }: IDraggableCardProps) {
   const setToDos = useSetRecoilState(toDoState);
+  const { register, handleSubmit, formState: { errors } } = useForm<IForm>();
 
   const onButtonClick = () => {
     setToDos((prev) => {
@@ -58,6 +78,13 @@ function DraggableCard({
     });
   };
 
+  const toDoEditValid = ({ toDoText }: IForm) => {
+    setToDos((prev) => {
+      const copy = { ...prev };
+      return prev;
+    });
+  };
+
   return (
     <Draggable draggableId={toDoId + ""} index={index} key={index}>
       {(magic, info) => (
@@ -67,10 +94,24 @@ function DraggableCard({
           {...magic.dragHandleProps}
           isDragging={info.isDragging}
         >
-          <span>{toDoText}</span>
+
+          <Form onSubmit={handleSubmit(toDoEditValid)}>
+            <Input {...register("toDoText", {
+              required: {
+                value: true,
+                message: "Content of To Do is required",
+              },
+              maxLength: {
+                value: 20,
+                message: "The content of To Do is too long!",
+              }
+            })} defaultValue={toDoText} />
+          </Form>
+
           <DeleteButton onClick={onButtonClick}>
             <span>Delete</span>
           </DeleteButton>
+
         </Card>
       )}
     </Draggable>
