@@ -57,10 +57,6 @@ function EditBoardTitle({ boardId }: IEditBoardTitleProps) {
     });
   };
 
-  setInterval(() => {
-    console.log(toDos);
-  }, 1000);
-
   return (
     <Form onSubmit={handleSubmit(boardTitleValid)}>
       <Title {...register("boardTitle", {
