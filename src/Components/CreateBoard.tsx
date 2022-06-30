@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "../atoms";
 import ErrorMessage from "./Errors";
@@ -29,17 +29,30 @@ interface IForm {
 }
 
 function CreateBoards() {
-  const setBoard = useSetRecoilState(toDoState);
+  const [toDos, setToDo] = useRecoilState(toDoState);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
+    setError,
   } = useForm<IForm>();
 
   const onValid = ({ title }: IForm) => {
-    setBoard((prev) => {
+    setToDo((prev) => {
+      const exist = [];
+
+      for (const k in toDos) {
+        exist.push(k);
+      };
+
+      exist.map((item) => {
+        if (item === title) {
+          setError("title", { message: `The title ${title} is already taken` });
+        }
+      });
+
       return {
         ...prev,
         [title]: [],
