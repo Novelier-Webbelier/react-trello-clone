@@ -3,7 +3,7 @@ import { Droppable } from "react-beautiful-dnd";
 import DraggableCard from "./DraggableCard";
 import { useForm } from "react-hook-form";
 import { IToDo, toDoState } from "../atoms";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
 import EditBoardTitle from "./EditBoardTitle";
 
 const Wrapper = styled.div<IWrapperProps>`
@@ -50,6 +50,7 @@ const Input = styled.input`
   box-sizing: border-box;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 5px;
+  margin-top: 10px;
 
   &:focus {
     outline: none;
@@ -89,7 +90,7 @@ interface IForm {
 }
 
 function Board({ toDos, boardId }: IBoardProps) {
-  const setToDo = useSetRecoilState(toDoState);
+  const [toDo, setToDo] = useRecoilState(toDoState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
 
   const onValid = ({ toDo }: IForm) => {
@@ -153,7 +154,9 @@ function Board({ toDos, boardId }: IBoardProps) {
               />
             ))}
             {magic.placeholder}
-            <ClearButton onClick={onClearButtonClick}>Clear</ClearButton>
+            {toDo[boardId].length === 0 ? null : (
+              <ClearButton onClick={onClearButtonClick}>Clear</ClearButton>
+            )}
           </Area>
         </Wrapper>
       )}

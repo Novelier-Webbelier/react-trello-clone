@@ -1,5 +1,6 @@
+import { exit } from "process";
 import { useForm } from "react-hook-form";
-import { useSetRecoilState } from "recoil";
+import { errorSelector, useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { toDoState } from "../atoms";
 import { Form } from "./Board";
@@ -35,21 +36,30 @@ interface IForm {
 }
 
 function EditBoardTitle({ boardId }: IEditBoardTitleProps) {
-  const setToDos = useSetRecoilState(toDoState);
-  const { register, handleSubmit, formState: { errors } } = useForm<IForm>();
+  const [toDos, setToDos] = useRecoilState(toDoState);
+  const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IForm>();
 
   const boardTitleValid = ({ boardTitle }: IForm) => {
     setToDos((prev) => {
       const copy = { ...prev };
 
-      if (boardId !== boardTitle) {
-        copy[boardTitle] = prev[boardId];
-        delete copy[boardId];
-      }
+      for (const k in toDos) {
+        if (boardTitle === k) {
+          setError("boardTitle", { message: `Title of ${boardTitle} is already taken` });
+          return copy;
+        }
+      };
+
+      copy[boardTitle] = prev[boardId];
+      delete copy[boardId];
 
       return copy;
     });
   };
+
+  setInterval(() => {
+    console.log(toDos);
+  }, 1000);
 
   return (
     <Form onSubmit={handleSubmit(boardTitleValid)}>

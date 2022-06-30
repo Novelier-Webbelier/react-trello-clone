@@ -5,6 +5,7 @@ export const Error = styled.p`
   font-weight: 500;
   font-size: 16px;
   text-align: center;
+  margin-top: 3px;
 `;
 
 interface IErrorsProps {
