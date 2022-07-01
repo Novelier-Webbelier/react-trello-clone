@@ -1,4 +1,4 @@
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import { toDoState } from "./atoms";
 import styled from "styled-components";
@@ -24,8 +24,18 @@ function App() {
 
   const onDragEnd = (info: DropResult) => {
     const { destination, source } = info;
+    console.log(info);
 
     if (!destination) return;
+
+    if (destination.droppableId === "boards") {
+      setToDos((allBoards) => {
+        const boardCopy = [...allBoards[source.droppableId]];
+
+        return allBoards;
+      });
+      return;
+    }
 
     if (destination.droppableId === source.droppableId) {
       setToDos((allBoards) => {
@@ -63,12 +73,18 @@ function App() {
     <>
       <DragDropContext onDragEnd={onDragEnd}>
         <Wrapper>
-          <Boards>
-            {Object.keys(toDos).map((boardId) => (
-              <Board key={boardId} boardId={boardId} toDos={toDos[boardId]} />
-            ))}
-            <CreateBoards />
-          </Boards>
+          <Droppable droppableId="boards">
+            {(magic, _) => (
+              <div ref={magic.innerRef} {...magic.droppableProps}>
+                <Boards>
+                  {Object.keys(toDos).map((boardId, index) => (
+                    <Board key={boardId} boardId={boardId} toDos={toDos[boardId]} index={index} />
+                  ))}
+                  <CreateBoards />
+                </Boards>
+              </div>
+            )}
+          </Droppable>
         </Wrapper>
       </DragDropContext>
     </>

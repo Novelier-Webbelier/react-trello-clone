@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Droppable } from "react-beautiful-dnd";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 import DraggableCard from "./DraggableCard";
 import { useForm } from "react-hook-form";
 import { IToDo, toDoState } from "../atoms";
@@ -88,13 +88,14 @@ interface IWrapperProps {
 interface IBoardProps {
   toDos: IToDo[];
   boardId: string;
+  index: number;
 }
 
 interface IForm {
   toDo: string;
 }
 
-function Board({ toDos, boardId }: IBoardProps) {
+function Board({ toDos, boardId, index }: IBoardProps) {
   const [toDo, setToDo] = useRecoilState(toDoState);
   const { register, setValue, handleSubmit } = useForm<IForm>();
 
@@ -123,52 +124,59 @@ function Board({ toDos, boardId }: IBoardProps) {
   };
 
   return (
-    <Droppable droppableId={boardId}>
-      {(magic, info) => (
-        <Wrapper
-          isDraggingOver={info.isDraggingOver}
-          isDraggingFromThis={Boolean(info.draggingFromThisWith)}
-        >
-          <EditBoardTitle boardId={boardId} />
+    <Draggable draggableId={"board-id-" + boardId} index={index}>
+      {(magic, _) => (
+        <div ref={magic.innerRef} {...magic.draggableProps} {...magic.dragHandleProps}>
+          <Droppable droppableId={boardId}>
+            {(magic, info) => (
+              <Wrapper
+                isDraggingOver={info.isDraggingOver}
+                isDraggingFromThis={Boolean(info.draggingFromThisWith)}
+              >
+                <EditBoardTitle boardId={boardId} />
 
-          <Form onSubmit={handleSubmit(onValid)}>
-            <Input
-              {...register("toDo", {
-                required: {
-                  value: true,
-                  message: "To Do is required",
-                },
-                maxLength: {
-                  value: 30,
-                  message: "Max length is 30",
-                },
-              })}
-              type="text"
-              placeholder={`Add task on ${boardId}`}
-            />
-          </Form>
+                <Form onSubmit={handleSubmit(onValid)}>
+                  <Input
+                    {...register("toDo", {
+                      required: {
+                        value: true,
+                        message: "To Do is required",
+                      },
+                      maxLength: {
+                        value: 30,
+                        message: "Max length is 30",
+                      },
+                    })}
+                    type="text"
+                    placeholder={`Add task on ${boardId}`}
+                  />
+                </Form>
 
-          <Area ref={magic.innerRef} {...magic.droppableProps}>
-            {toDos.map((toDo, index) => (
-              <DraggableCard
-                key={toDo.id}
-                index={index}
-                toDoId={toDo.id}
-                toDoText={toDo.text}
-                boardId={boardId}
-              />
-            ))}
-            {magic.placeholder}
-            <ManageBoard>
-              {toDo[boardId].length === 0 ? null : (
-                <ClearButton onClick={onClearButtonClick}>Clear</ClearButton>
-              )}
-              <DeleteBoard boardId={boardId} />
-            </ManageBoard>
-          </Area>
-        </Wrapper>
+                <Area ref={magic.innerRef} {...magic.droppableProps}>
+                  {toDos.map((toDo, index) => (
+                    <DraggableCard
+                      key={toDo.id}
+                      index={index}
+                      toDoId={toDo.id}
+                      toDoText={toDo.text}
+                      boardId={boardId}
+                    />
+                  ))}
+
+                  <ManageBoard>
+                    {toDo[boardId].length === 0 ? null : (
+                      <ClearButton onClick={onClearButtonClick}>Clear</ClearButton>
+                    )}
+                    <DeleteBoard boardId={boardId} />
+                  </ManageBoard>
+                </Area>
+              </Wrapper>
+            )}
+          </Droppable>
+        </div>
       )}
-    </Droppable>
+
+    </Draggable>
   );
 }
 
