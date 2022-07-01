@@ -1,33 +1,41 @@
-import { DragDropContext, DropResult } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useRecoilState } from "recoil";
 import { toDoState } from "./atoms";
 import styled from "styled-components";
 import Board from "./Components/Board";
+import CreateBoards from "./Components/CreateBoard";
 
 const Wrapper = styled.div`
   display: flex;
-  max-width: 680px;
-  width: 100%;
-  margin: 0 auto;
-  justify-content: center;
-  align-items: center;
   height: 100vh;
+  width: 100vw;
+  justify-content: flex-start;
+  align-items: center;
 `;
 
 const Boards = styled.div`
-  display: grid;
-  width: 100%;
-  gap: 10px;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 `;
 
 function App() {
   const [toDos, setToDos] = useRecoilState(toDoState);
 
   const onDragEnd = (info: DropResult) => {
-    const { destination, draggableId, source } = info;
+    const { destination, source } = info;
+    console.log(info);
 
     if (!destination) return;
+
+    if (destination.droppableId === "boards") {
+      setToDos((allBoards) => {
+        const boardCopy = [...allBoards[source.droppableId]];
+
+        return allBoards;
+      });
+      return;
+    }
 
     if (destination.droppableId === source.droppableId) {
       setToDos((allBoards) => {
@@ -65,11 +73,18 @@ function App() {
     <>
       <DragDropContext onDragEnd={onDragEnd}>
         <Wrapper>
-          <Boards>
-            {Object.keys(toDos).map((boardId) => (
-              <Board key={boardId} boardId={boardId} toDos={toDos[boardId]} />
-            ))}
-          </Boards>
+          <Droppable droppableId="boards">
+            {(magic, _) => (
+              <div ref={magic.innerRef} {...magic.droppableProps}>
+                <Boards>
+                  {Object.keys(toDos).map((boardId, index) => (
+                    <Board key={boardId} boardId={boardId} toDos={toDos[boardId]} index={index} />
+                  ))}
+                  <CreateBoards />
+                </Boards>
+              </div>
+            )}
+          </Droppable>
         </Wrapper>
       </DragDropContext>
     </>
